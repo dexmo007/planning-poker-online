@@ -1,16 +1,24 @@
 <script>
   import firebase from "firebase/app";
   import { FirebaseApp, User, Doc, Collection } from "sveltefire";
-  import ScrumfaceCard from "./ScrumfaceCard.svelte";
-  import Game from "./Game.svelte";
-  import decks from "./decks.js";
+  import ScrumfaceCard from "../components/ScrumfaceCard.svelte";
+  import Game from "../Game.svelte";
+  import decks from "../decks.js";
   import { collectionStore, docStore } from "sveltefire";
+  import { navigate } from "svelte-routing";
 
   export let sessionId;
 
   let session;
   const sessionStore = docStore(`sessions/${sessionId}`);
-  sessionStore.subscribe(v => (session = v));
+  sessionStore.subscribe(v => {
+    if (sessionStore.error || v === null) {
+      navigate(`/session/${sessionId}/not-found`);
+      return;
+    }
+    console.log("gotSession", v);
+    session = v;
+  });
 
   let players;
   const playersStore = collectionStore(`sessions/${sessionId}/users`, ref =>

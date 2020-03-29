@@ -1,9 +1,7 @@
 <script>
   import decks from "./decks.js";
   import firebase from "firebase/app";
-  import { createEventDispatcher } from "svelte";
-
-  const dispatch = createEventDispatcher();
+  import { navigate } from "svelte-routing";
 
   let username;
   let deck;
@@ -16,22 +14,21 @@
       owner: user.uid,
       deck
     };
+
     const ref = await firebase
       .firestore()
       .collection("sessions")
       .add(session);
+    console.log("created");
+
     await ref
       .collection("users")
       .doc(user.uid)
       .set({
         name: username,
-        joinedAt: Date.now()
+        joinedAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-    console.log("Session", ref.id, "created");
-    dispatch("session", {
-      id: ref.id,
-      ...session
-    });
+    navigate(`/session/${ref.id}`);
   }
 </script>
 

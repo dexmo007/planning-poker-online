@@ -1,80 +1,51 @@
 <script>
-  import ScrumfaceCard from "./ScrumfaceCard.svelte";
-  import Game from "./Game.svelte";
-  import CreateSession from "./CreateSession.svelte";
-  import JoinSession from "./JoinSession.svelte";
-  import Session from "./Session.svelte";
-  import { FirebaseApp, User, Doc, Collection } from "sveltefire";
-  import decks from "./decks.js";
-
+  import { Router, Link, Route } from "svelte-routing";
+  import { FirebaseApp } from "sveltefire";
+  import Home from "./views/Home.svelte";
+  import Session from "./views/Session.svelte";
+  import JoinSession from "./views/JoinSession.svelte";
+  import SessionNotFound from "./views/SessionNotFound.svelte";
   import firebase from "firebase/app";
-  import "firebase/firestore";
-  import "firebase/auth";
-  // import 'firebase/performance';
-  // import 'firebase/analytics';
-  const firebaseConfig = {
-    apiKey: "AIzaSyAM_nio_ZQ7ZsaccbHWpQkw2uK04QLXjUY",
-    authDomain: "planning-poker-55cfa.firebaseapp.com",
-    databaseURL: "https://planning-poker-55cfa.firebaseio.com",
-    projectId: "planning-poker-55cfa",
-    storageBucket: "planning-poker-55cfa.appspot.com",
-    messagingSenderId: "340398036300",
-    appId: "1:340398036300:web:ea42f4b26060e7334d6be9",
-    measurementId: "G-MZZSDK2LBB"
-  };
-  firebase.initializeApp(firebaseConfig);
 
-  let session;
-
-  function gotSession(e) {
-    session = e.detail;
-    localStorage.setItem("session", JSON.stringify(e.detail));
-  }
-
-  const persistent = localStorage.getItem("session");
-  if (persistent) {
-    session = JSON.parse(persistent);
-  }
+  export let url = "";
 </script>
 
 <style>
-  .hr {
-    display: block;
-    width: 100%;
-    position: relative;
+  :global(body) {
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    text-align: center;
+  }
+  main {
+    text-align: center;
     padding: 1em;
+    margin: 0 auto;
+    flex: 1;
   }
-  .hr::before,
-  .hr::after {
-    content: "";
-    position: absolute;
-    border-top: 1px solid black;
-    top: 50%;
-  }
-  .hr::before {
-    left: 0;
-    right: calc(50% + 2ch);
-  }
-  .hr::after {
-    right: 0;
-    left: calc(50% + 2ch);
+  footer {
+    text-align: center;
   }
 </style>
 
-<FirebaseApp {firebase}>
+<Router {url}>
+  <FirebaseApp {firebase}>
+    <header>
+      <h1>Planning Poker</h1>
+    </header>
 
-  {#if !session}
-    <div>
-      <CreateSession on:session={gotSession} />
-    </div>
-
-    <span class="hr">OR</span>
-    <div>
-      <JoinSession on:session={gotSession} />
-    </div>
-  {:else}
-    <div>
-      <Session sessionId={session.id} />
-    </div>
-  {/if}
-</FirebaseApp>
+    <main>
+      <Route path="/join/:sessionId" component={JoinSession} />
+      <Route path="/session/:sessionId" component={Session} />
+      <Route path="/session/:sessionId/not-found" component={SessionNotFound} />
+      <Route path="/">
+        <Home />
+      </Route>
+    </main>
+    <footer>
+      Made with ❤️ by
+      <a href="https://github.com/dexmo007">dexmo</a>
+    </footer>
+  </FirebaseApp>
+</Router>

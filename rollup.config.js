@@ -23,6 +23,7 @@ export default {
       css: (css) => {
         css.write('public/build/bundle.css');
       },
+      hydratable: true,
     }),
 
     // If you have external dependencies installed from

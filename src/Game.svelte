@@ -1,7 +1,7 @@
 <script>
   import { fly } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
-  import ScrumfaceCard from "./ScrumfaceCard.svelte";
+  import ScrumfaceCard from "./components/ScrumfaceCard.svelte";
   let selected = null;
   export let deck;
   let values = deck.values;

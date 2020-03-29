@@ -1,7 +1,9 @@
-import Main from './Main.svelte';
+import App from './App.svelte';
+import './firebase';
 
-const app = new Main({
+const app = new App({
   target: document.body,
+  hydrate: true,
 });
 
 export default app;
