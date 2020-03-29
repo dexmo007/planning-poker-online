@@ -1,12 +1,6 @@
 <script>
-  import CreateSession from "../CreateSession.svelte";
-  import JoinSession from "../JoinSession.svelte";
-
-  let session;
-
-  function gotSession(e) {
-    session = e.detail;
-  }
+  import CreateSessionForm from "../components/CreateSessionForm.svelte";
+  import JoinSessionForm from "../components/JoinSessionForm.svelte";
 </script>
 
 <style>
@@ -34,10 +28,10 @@
 </style>
 
 <div>
-  <CreateSession on:session={gotSession} />
+  <CreateSessionForm />
 </div>
 
 <span class="hr">OR</span>
 <div>
-  <JoinSession on:session={gotSession} />
+  <JoinSessionForm />
 </div>

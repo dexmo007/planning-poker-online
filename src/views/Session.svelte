@@ -2,8 +2,7 @@
   import firebase from "firebase/app";
   import { FirebaseApp, User, Doc, Collection } from "sveltefire";
   import ScrumfaceCard from "../components/ScrumfaceCard.svelte";
-  import Game from "../Game.svelte";
-  import decks from "../decks.js";
+  import decks from "../data/decks.js";
   import { collectionStore, docStore } from "sveltefire";
   import { navigate, Link } from "svelte-routing";
 
@@ -16,7 +15,6 @@
       navigate(`/session/${sessionId}/not-found`);
       return;
     }
-    console.log("gotSession", v);
     session = v;
   });
 

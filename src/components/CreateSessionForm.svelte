@@ -1,5 +1,6 @@
 <script>
-  import decks from "./decks.js";
+  import { getContext } from "svelte";
+  import decks from "../data/decks.js";
   import firebase from "firebase/app";
   import { navigate } from "svelte-routing";
 
@@ -9,7 +10,7 @@
     if (!username) {
       return;
     }
-    const { user } = await firebase.auth().signInAnonymously();
+    const { user } = getContext("user");
     const session = {
       owner: user.uid,
       deck,
@@ -21,8 +22,6 @@
       .firestore()
       .collection("sessions")
       .add(session);
-    console.log("created");
-
     await ref
       .collection("users")
       .doc(user.uid)

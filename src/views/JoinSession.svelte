@@ -1,4 +1,5 @@
 <script>
+  import { getContext } from "svelte";
   import firebase from "firebase/app";
   import { navigate } from "svelte-routing";
 
@@ -10,7 +11,7 @@
       return;
     }
     error = null;
-    const { user } = await firebase.auth().signInAnonymously();
+    const { user } = getContext("user");
     const ref = firebase
       .firestore()
       .collection("sessions")
