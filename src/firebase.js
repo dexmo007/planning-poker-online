@@ -5,7 +5,7 @@ import 'firebase/auth';
 // import 'firebase/analytics';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyAM_nio_ZQ7ZsaccbHWpQkw2uK04QLXjUY',
+  apiKey: process.env.GOOGLE_API_KEY,
   authDomain: 'planning-poker-55cfa.firebaseapp.com',
   databaseURL: 'https://planning-poker-55cfa.firebaseio.com',
   projectId: 'planning-poker-55cfa',

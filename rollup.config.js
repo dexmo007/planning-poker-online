@@ -3,6 +3,9 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
+import replace from '@rollup/plugin-replace';
+import { config } from 'dotenv';
+import * as path from 'path';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -15,6 +18,13 @@ export default {
     file: 'public/build/bundle.js',
   },
   plugins: [
+    replace({
+      'process.env': JSON.stringify({
+        mode: production ? 'production' : 'development',
+        ...config({ path: path.resolve(process.cwd(), '.env') }).parsed,
+        ...config({ path: path.resolve(process.cwd(), '.env.local') }).parsed,
+      }),
+    }),
     svelte({
       // enable run-time checks when not in production
       dev: !production,
@@ -25,12 +35,6 @@ export default {
       },
       hydratable: true,
     }),
-
-    // If you have external dependencies installed from
-    // npm, you'll most likely need these plugins. In
-    // some cases you'll need additional configuration -
-    // consult the documentation for details:
-    // https://github.com/rollup/plugins/tree/master/packages/commonjs
     resolve({
       browser: true,
       dedupe: (importee) =>
