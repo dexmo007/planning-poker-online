@@ -11,10 +11,6 @@
 </script>
 
 <style>
-  :global(body) {
-    display: flex;
-    flex-direction: column;
-  }
   header {
     text-align: center;
   }
