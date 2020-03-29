@@ -12,7 +12,9 @@
     const { user } = await firebase.auth().signInAnonymously();
     const session = {
       owner: user.uid,
-      deck
+      deck,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      state: "CREATED"
     };
 
     const ref = await firebase
