@@ -5,7 +5,7 @@
   import Game from "../Game.svelte";
   import decks from "../decks.js";
   import { collectionStore, docStore } from "sveltefire";
-  import { navigate } from "svelte-routing";
+  import { navigate, Link } from "svelte-routing";
 
   export let sessionId;
 
@@ -71,6 +71,15 @@
     }
     await batch.commit();
   }
+
+  async function terminateSession() {
+    const db = firebase.firestore();
+    await db
+      .collection("sessions")
+      .doc(sessionId)
+      .update({ state: "TERMINATED" });
+    navigate("/");
+  }
 </script>
 
 <style>
@@ -112,6 +121,13 @@
     </h3>
     {#if session.owner === user.uid && session.state !== 'STARTED'}
       <button on:click={() => setSessionState('STARTED')}>Start session</button>
+    {/if}
+    {#if session.owner === user.uid}
+      <button on:click={() => terminateSession()}>Terminate session</button>
+    {/if}
+    {#if session.state === 'TERMINATED'}
+      This session has been terminated.
+      <Link to="/">back to home</Link>
     {/if}
     {#if session.state === 'STARTED'}
       {#if players}
