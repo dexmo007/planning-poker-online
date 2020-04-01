@@ -3,9 +3,10 @@
   import decks from "../data/decks.js";
   import firebase from "firebase/app";
   import { navigate } from "svelte-routing";
+  import DeckSelector from "./DeckSelector.svelte";
 
   let username;
-  let deck;
+  let deck = decks.find(({ recommended }) => recommended);
   async function createSession() {
     if (!username) {
       return;
@@ -13,7 +14,7 @@
     const { user } = getContext("user");
     const session = {
       owner: user.uid,
-      deck,
+      deck: deck.name,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       state: "CREATED"
     };
@@ -33,19 +34,21 @@
   }
 </script>
 
+<style>
+  .deck-select {
+    margin-bottom: 1em;
+  }
+</style>
+
 <h3>Create a session</h3>
 <form on:submit|preventDefault={createSession}>
   <label>
     Your name
     <input bind:value={username} />
   </label>
-  <label>
-    Select a deck
-    <select bind:value={deck}>
-      {#each decks as deck}
-        <option value={deck.name}>{deck.name}</option>
-      {/each}
-    </select>
-  </label>
+  <div class="deck-select">
+    <h5>Select a deck</h5>
+    <DeckSelector bind:value={deck} />
+  </div>
   <input type="submit" value="Create" disabled={!username} />
 </form>
