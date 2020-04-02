@@ -24,7 +24,7 @@
     "svelte": "^3.20.1"
   },
   "dependencies": {
-    "firebase": "^7.13.1",
+    "firebase": "^7.13.2",
     "sveltefire": "^0.1.4",
     "svelte-routing": "^1.4.2"
   }
