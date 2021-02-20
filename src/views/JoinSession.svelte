@@ -1,32 +1,27 @@
 <script>
-  import { getContext } from "svelte";
-  import firebase from "firebase/app";
-  import { navigate } from "svelte-routing";
+  import { getContext } from 'svelte';
+  import firebase from 'firebase/app';
+  import { navigate } from 'svelte-routing';
 
   export let sessionId;
   let username;
   let error;
+  const { user } = getContext('user');
   async function joinSession() {
     if (!sessionId || !username) {
       return;
     }
     error = null;
-    const { user } = getContext("user");
-    const ref = firebase
-      .firestore()
-      .collection("sessions")
-      .doc(sessionId);
+
+    const ref = firebase.firestore().collection('sessions').doc(sessionId);
     const snap = await ref.get();
-    console.log("get wroke", snap.data());
+    console.log('get wroke', snap.data());
 
     if (snap.exists) {
-      await ref
-        .collection("users")
-        .doc(user.uid)
-        .set({
-          name: username,
-          joinedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+      await ref.collection('users').doc(user.uid).set({
+        name: username,
+        joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
       navigate(`/session/${sessionId}`);
     } else {
       error = "We didn't find this session.";

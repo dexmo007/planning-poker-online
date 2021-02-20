@@ -1,18 +1,18 @@
 <script>
-  import { onMount, setContext } from "svelte";
-  import { writable } from "svelte/store";
-  import { Router, Link, Route } from "svelte-routing";
-  import { FirebaseApp, User } from "sveltefire";
-  import Home from "./views/Home.svelte";
-  import Session from "./views/Session.svelte";
-  import JoinSession from "./views/JoinSession.svelte";
-  import SessionNotFound from "./views/SessionNotFound.svelte";
-  import firebase from "firebase/app";
+  import { onMount, setContext } from 'svelte';
+  import { writable } from 'svelte/store';
+  import { Router, Link, Route } from 'svelte-routing';
+  import { FirebaseApp, User } from 'sveltefire';
+  import Home from './views/Home.svelte';
+  import Session from './views/Session.svelte';
+  import JoinSession from './views/JoinSession.svelte';
+  import SessionNotFound from './views/SessionNotFound.svelte';
+  import firebase from 'firebase/app';
 
-  export let url = "";
+  export let url = '';
   let user = writable(null);
   let ctx = {};
-  setContext("user", ctx);
+  setContext('user', ctx);
 
   function setUser(u) {
     ctx.user = u;
@@ -20,7 +20,7 @@
   }
 
   onMount(() => {
-    firebase.auth().onAuthStateChanged(u => {
+    firebase.auth().onAuthStateChanged((u) => {
       if (u) {
         setUser(u);
       } else {
@@ -34,6 +34,39 @@
     });
   });
 </script>
+
+<Router {url}>
+  <FirebaseApp {firebase}>
+    {#if $user}
+      <header>
+        <h1>Planning Poker</h1>
+        {#if $user.isAnonymous}
+          <button disabled>Sign in</button>
+        {:else}
+          <button>{$user.displayName}</button>
+        {/if}
+      </header>
+
+      <main>
+        <Route path="/join/:sessionId" component={JoinSession} />
+        <Route path="/session/:sessionId" component={Session} />
+        <Route
+          path="/session/:sessionId/not-found"
+          component={SessionNotFound}
+        />
+        <Route path="/">
+          <Home />
+        </Route>
+      </main>
+      <footer>
+        Made with
+        <span role="img" alt="heart">❤️</span>
+        by
+        <a href="https://github.com/dexmo007">dexmo</a>
+      </footer>
+    {/if}
+  </FirebaseApp>
+</Router>
 
 <style>
   header {
@@ -60,35 +93,6 @@
   footer {
     text-align: center;
     margin-bottom: 0.1em;
+    font-size: 1.1em;
   }
 </style>
-
-<Router {url}>
-  <FirebaseApp {firebase}>
-    {#if $user}
-      <header>
-        <h1>Planning Poker</h1>
-        {#if $user.isAnonymous}
-          <button disabled>Sign in</button>
-        {:else}
-          <button>{$user.displayName}</button>
-        {/if}
-      </header>
-
-      <main>
-        <Route path="/join/:sessionId" component={JoinSession} />
-        <Route path="/session/:sessionId" component={Session} />
-        <Route
-          path="/session/:sessionId/not-found"
-          component={SessionNotFound} />
-        <Route path="/">
-          <Home />
-        </Route>
-      </main>
-      <footer>
-        Made with ❤️ by
-        <a href="https://github.com/dexmo007">dexmo</a>
-      </footer>
-    {/if}
-  </FirebaseApp>
-</Router>

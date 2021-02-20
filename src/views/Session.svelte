@@ -1,16 +1,18 @@
 <script>
-  import firebase from "firebase/app";
-  import { FirebaseApp, User, Doc, Collection } from "sveltefire";
-  import ScrumfaceCard from "../components/ScrumfaceCard.svelte";
-  import decks from "../data/decks.js";
-  import { collectionStore, docStore } from "sveltefire";
-  import { navigate, Link } from "svelte-routing";
+  import firebase from 'firebase/app';
+  import { FirebaseApp, User, Doc, Collection } from 'sveltefire';
+  import ScrumfaceCard from '../components/ScrumfaceCard.svelte';
+  import CopyToClipboard from '../components/CopyToClipboard.svelte';
+  import decks from '../data/decks.js';
+  import { collectionStore, docStore } from 'sveltefire';
+  import { navigate, Link } from 'svelte-routing';
 
   export let sessionId;
+  export let location;
 
   let session;
   const sessionStore = docStore(`sessions/${sessionId}`);
-  sessionStore.subscribe(v => {
+  sessionStore.subscribe((v) => {
     if (sessionStore.error || v === null) {
       navigate(`/session/${sessionId}/not-found`);
       return;
@@ -19,50 +21,43 @@
   });
 
   let players;
-  const playersStore = collectionStore(`sessions/${sessionId}/users`, ref =>
-    ref.orderBy("joinedAt")
+  const playersStore = collectionStore(`sessions/${sessionId}/users`, (ref) =>
+    ref.orderBy('joinedAt')
   );
-  playersStore.subscribe(v => (players = v));
+  playersStore.subscribe((v) => (players = v));
 
   $: deck = session && decks.find(({ name }) => name === session.deck);
   $: isReveal =
     session &&
     players &&
-    session.state === "STARTED" &&
-    players.every(player => player.choice);
+    session.state === 'STARTED' &&
+    players.every((player) => player.choice);
 
   async function setSessionState(sessionState) {
-    await firebase
-      .firestore()
-      .collection("sessions")
-      .doc(sessionId)
-      .set(
-        {
-          state: sessionState
-        },
-        { merge: true }
-      );
+    await firebase.firestore().collection('sessions').doc(sessionId).set(
+      {
+        state: sessionState,
+      },
+      { merge: true }
+    );
   }
 
   let choice;
   async function confirmChosenCard(userId) {
-    await firebase
-      .firestore()
-      .doc(`sessions/${sessionId}/users/${userId}`)
-      .set(
-        {
-          choice
-        },
-        { merge: true }
-      );
+    await firebase.firestore().doc(`sessions/${sessionId}/users/${userId}`).set(
+      {
+        choice,
+      },
+      { merge: true }
+    );
     choice = null;
   }
   async function nextRound() {
     choice = null;
     const db = firebase.firestore();
     const batch = db.batch();
-    batch.update(db.collection("sessions").doc(sessionId), {
-      state: "STARTED"
+    batch.update(db.collection('sessions').doc(sessionId), {
+      state: 'STARTED',
     });
     for (const player of players) {
       batch.update(player.ref, { choice: null });
@@ -73,12 +68,107 @@
   async function terminateSession() {
     const db = firebase.firestore();
     await db
-      .collection("sessions")
+      .collection('sessions')
       .doc(sessionId)
-      .update({ state: "TERMINATED" });
-    navigate("/");
+      .update({ state: 'TERMINATED' });
+    navigate('/');
   }
 </script>
+
+<User let:user>
+  {#if session}
+    <h3>
+      Welcome in {sessionId}
+      {#if session.owner === user.uid}(Owner){/if}
+    </h3>
+    {#if session.owner === user.uid && session.state !== 'STARTED'}
+      <CopyToClipboard
+        label="Copy Invite Link"
+        value={`${location.origin}/join/${sessionId}`}
+      />
+      <button on:click={() => setSessionState('STARTED')}>Start session</button>
+    {/if}
+    {#if session.owner === user.uid}
+      <button on:click={() => terminateSession()}>Terminate session</button>
+    {/if}
+    {#if session.state === 'TERMINATED'}
+      This session has been terminated.
+      <Link to="/">back to home</Link>
+    {/if}
+    {#if session.state === 'STARTED'}
+      {#if players}
+        <div class="board">
+          {#each players as player}
+            <div>
+              <span>{player.ref.id === user.uid ? 'You' : player.name}</span>
+              {#if player.choice || (player.ref.id === user.uid && choice)}
+                <div>
+                  <ScrumfaceCard
+                    faceUp={isReveal || !player.choice}
+                    value={player.choice ? player.choice.value : choice.value}
+                  />
+                  {#if !player.choice}
+                    <button on:click={() => confirmChosenCard(user.uid)}>
+                      Confirm
+                    </button>
+                  {/if}
+                </div>
+              {:else}
+                <div class="card-skeleton">
+                  <span>Choosing...</span>
+                </div>
+              {/if}
+            </div>
+          {/each}
+        </div>
+        {#if isReveal && session.owner === user.uid}
+          <div class="board-footer">
+            <button on:click={nextRound}>Next round</button>
+          </div>
+        {/if}
+      {:else}
+        <span>Loading users...</span>
+      {/if}
+      <div class="deck-container">
+        {#if !players || !players.find((p) => p.ref.id === user.uid).choice}
+          <span>Choose a card</span>
+          <div class="deck">
+            {#each deck.values as value}
+              <ScrumfaceCard
+                faceUp
+                {value}
+                width="90px"
+                clickable
+                on:click={() => (choice = { value })}
+              />
+            {/each}
+          </div>
+        {:else if !isReveal}
+          <span>Waiting for other players</span>
+        {/if}
+      </div>
+    {:else}
+      <Collection
+        path={`sessions/${sessionId}/users`}
+        query={(ref) => ref.orderBy('joinedAt')}
+        let:data={users}
+        let:ref={usersRef}
+        log
+      >
+        {#if !users.length}No users yet...{/if}
+        <ul>
+          {#each users as user}
+            <li>{user.name}</li>
+          {/each}
+        </ul>
+        <span slot="loading">Loading users...</span>
+      </Collection>
+      Waiting for owner to start the session.
+    {/if}
+  {:else}
+    <div>Loading...</div>
+  {/if}
+</User>
 
 <style>
   .board {
@@ -109,95 +199,3 @@
     align-items: center;
   }
 </style>
-
-<User let:user>
-
-  {#if session}
-    <h3>
-      Welcome in {sessionId}
-      {#if session.owner === user.uid}(Owner){/if}
-    </h3>
-    {#if session.owner === user.uid && session.state !== 'STARTED'}
-      <button on:click={() => setSessionState('STARTED')}>Start session</button>
-    {/if}
-    {#if session.owner === user.uid}
-      <button on:click={() => terminateSession()}>Terminate session</button>
-    {/if}
-    {#if session.state === 'TERMINATED'}
-      This session has been terminated.
-      <Link to="/">back to home</Link>
-    {/if}
-    {#if session.state === 'STARTED'}
-      {#if players}
-        <div class="board">
-          {#each players as player}
-            <div>
-              <span>{player.ref.id === user.uid ? 'You' : player.name}</span>
-              {#if player.choice || (player.ref.id === user.uid && choice)}
-                <div>
-                  <ScrumfaceCard
-                    faceUp={isReveal || !player.choice}
-                    value={player.choice ? player.choice.value : choice.value} />
-                  {#if !player.choice}
-                    <button on:click={() => confirmChosenCard(user.uid)}>
-                      Confirm
-                    </button>
-                  {/if}
-                </div>
-              {:else}
-                <div class="card-skeleton">
-                  <span>Choosing...</span>
-                </div>
-              {/if}
-
-            </div>
-          {/each}
-        </div>
-        {#if isReveal && session.owner === user.uid}
-          <div class="board-footer">
-            <button on:click={nextRound}>Next round</button>
-          </div>
-        {/if}
-      {:else}
-        <span>Loading users...</span>
-      {/if}
-      <div class="deck-container">
-        {#if !players || !players.find(p => p.ref.id === user.uid).choice}
-          <span>Choose a card</span>
-          <div class="deck">
-            {#each deck.values as value}
-              <ScrumfaceCard
-                faceUp
-                {value}
-                width="90px"
-                clickable
-                on:click={() => (choice = { value })} />
-            {/each}
-          </div>
-        {:else if !isReveal}
-          <span>Waiting for other players</span>
-        {/if}
-      </div>
-    {:else}
-      <Collection
-        path={`sessions/${sessionId}/users`}
-        query={ref => ref.orderBy('joinedAt')}
-        let:data={users}
-        let:ref={usersRef}
-        log>
-
-        {#if !users.length}No users yet...{/if}
-        <ul>
-          {#each users as user}
-            <li>{user.name}</li>
-          {/each}
-        </ul>
-        <span slot="loading">Loading users...</span>
-
-      </Collection>
-      Waiting for owner to start the session.
-    {/if}
-  {:else}
-    <div>Loading...</div>
-  {/if}
-</User>
