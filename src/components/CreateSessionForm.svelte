@@ -4,6 +4,7 @@
   import firebase from 'firebase/app';
   import { navigate } from 'svelte-routing';
   import DeckSelector from './DeckSelector.svelte';
+  import Button from './Button.svelte';
 
   let username;
   let deck = decks.find(({ recommended }) => recommended);
@@ -38,11 +39,17 @@
     <h5>Select a deck</h5>
     <DeckSelector bind:value={deck} />
   </div>
-  <input type="submit" value="Create" disabled={!username} />
+  <footer>
+    <Button icon="🚀" type="submit" disabled={!username}>Create</Button>
+  </footer>
 </form>
 
 <style>
   .deck-select {
     margin-bottom: 1em;
+  }
+  footer {
+    display: flex;
+    justify-content: center;
   }
 </style>

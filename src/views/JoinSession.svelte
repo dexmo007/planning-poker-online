@@ -2,6 +2,8 @@
   import { getContext } from 'svelte';
   import firebase from 'firebase/app';
   import { navigate } from 'svelte-routing';
+  import Button from '../components/Button.svelte';
+  import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 
   export let sessionId;
   let username;
@@ -15,7 +17,6 @@
 
     const ref = firebase.firestore().collection('sessions').doc(sessionId);
     const snap = await ref.get();
-    console.log('get wroke', snap.data());
 
     if (snap.exists) {
       await ref.collection('users').doc(user.uid).set({
@@ -35,6 +36,15 @@
     Your name
     <input bind:value={username} />
   </label>
-  <input type="submit" value="Join" disabled={!username} />
-  {#if error}{error}{/if}
+  <footer>
+    <Button icon={faSignInAlt} type="submit" disabled={!username}>Join</Button>
+    {#if error}{error}{/if}
+  </footer>
 </form>
+
+<style>
+  footer {
+    display: flex;
+    justify-content: center;
+  }
+</style>

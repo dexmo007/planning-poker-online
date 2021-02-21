@@ -1,3 +1,14 @@
+:root {
+  --primary-color: #0376ff;
+  --secondary-color: #444655;
+  --gray: #a9aabc;
+  --light-red: #f02056;
+  --dark-red: #b0002a;
+
+  --border-radius: 9px;
+  --border-width: 3px;
+}
+
 *,
 ::before,
 ::after {
@@ -20,7 +31,7 @@ h1 {
 }
 
 a {
-  color: rgb(0, 100, 200);
+  color: var(--primary-color);
   text-decoration: none;
 }
 
@@ -49,28 +60,23 @@ textarea {
   border-radius: 2px;
 }
 
+input {
+  border-width: var(--border-width);
+  border-radius: var(--border-radius);
+  padding: 1em;
+  outline: none;
+  border-color: var(--gray);
+}
+
+input:active,
+input:focus {
+  border-color: var(--primary-color);
+}
+
 input:disabled {
   color: #ccc;
 }
 
 input[type='range'] {
   height: 0;
-}
-
-button {
-  color: #333;
-  background-color: #f4f4f4;
-  outline: none;
-}
-
-button:disabled {
-  color: #999;
-}
-
-button:not(:disabled):active {
-  background-color: #ddd;
-}
-
-button:focus {
-  border-color: #666;
 }

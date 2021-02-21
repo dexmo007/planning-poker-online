@@ -7,6 +7,7 @@
   import Session from './views/Session.svelte';
   import JoinSession from './views/JoinSession.svelte';
   import SessionNotFound from './views/SessionNotFound.svelte';
+  import Emoji from './components/Emoji.svelte';
   import firebase from 'firebase/app';
 
   export let url = '';
@@ -40,11 +41,11 @@
     {#if $user}
       <header>
         <h1>Planning Poker</h1>
-        {#if $user.isAnonymous}
+        <!-- {#if $user.isAnonymous}
           <button disabled>Sign in</button>
         {:else}
           <button>{$user.displayName}</button>
-        {/if}
+        {/if} -->
       </header>
 
       <main>
@@ -60,7 +61,7 @@
       </main>
       <footer>
         Made with
-        <span role="img" alt="heart">❤️</span>
+        <Emoji value="❤️" label="heart" />
         by
         <a href="https://github.com/dexmo007">dexmo</a>
       </footer>
