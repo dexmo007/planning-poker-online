@@ -21,7 +21,13 @@
 
 <div>
   <span class="info" class:visible={showInfo}>{infoText}</span>
-  <textarea rows="1" cols={value.length} {value} bind:this={textarea} />
+  <textarea
+    rows="1"
+    cols={value.length}
+    readonly
+    {value}
+    bind:this={textarea}
+  />
   <span class="action" on:click={onCopyToClipboard}>
     <Fa icon={faCopy} />
   </span>
@@ -42,9 +48,9 @@
   }
   .action {
     position: absolute;
-    right: 0;
+    right: 1em;
     top: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateY(-50%);
     cursor: pointer;
   }
   .info {
