@@ -10,11 +10,11 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
-          node-version: 13
+          node-version: 14
       - run: npm ci
       - run: npm run build
       - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
+        uses: w9jds/firebase-action@2.0.0
         with:
           args: deploy --only hosting
         env:
