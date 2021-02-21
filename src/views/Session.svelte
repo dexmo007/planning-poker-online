@@ -83,7 +83,7 @@
     </h3>
     {#if session.owner === user.uid && session.state !== 'STARTED'}
       <CopyToClipboard
-        label="Copy Invite Link"
+        infoText="Link copied!"
         value={`${location.origin}/join/${sessionId}`}
       />
       <button on:click={() => setSessionState('STARTED')}>Start session</button>
