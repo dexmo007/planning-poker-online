@@ -1,7 +1,7 @@
 <script>
   import { navigate } from 'svelte-routing';
-  import Button from './Button.svelte';
   import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
+  import { Button, TextInput, Form } from './core';
 
   let sessionId;
 
@@ -13,20 +13,22 @@
   }
 </script>
 
-<h3>Join an existing session</h3>
-<form class="join" on:submit|preventDefault={joinSession}>
-  <label>
-    Enter the session id
-    <input bind:value={sessionId} />
-  </label>
-  <footer>
-    <Button icon={faSignInAlt} type="submit" disabled={!sessionId}>Join</Button>
-  </footer>
-</form>
+<div>
+  <Form on:submit={joinSession}>
+    <h3>Join an existing session</h3>
+    <TextInput label="Session id" bind:value={sessionId} name="sessionId" />
+    <footer slot="footer">
+      <Button icon={faSignInAlt} type="submit" disabled={!sessionId}
+        >Join</Button
+      >
+    </footer>
+  </Form>
+</div>
 
 <style>
-  footer {
+  div {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
   }
 </style>

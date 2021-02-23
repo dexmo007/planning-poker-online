@@ -4,7 +4,7 @@
   import firebase from 'firebase/app';
   import { navigate } from 'svelte-routing';
   import DeckSelector from './DeckSelector.svelte';
-  import Button from './Button.svelte';
+  import { Button, TextInput, Form } from './core';
 
   let username;
   let deck = decks.find(({ recommended }) => recommended);
@@ -29,27 +29,26 @@
   }
 </script>
 
-<h3>Create a session</h3>
-<form on:submit|preventDefault={createSession}>
-  <label>
-    Your name
-    <input bind:value={username} />
-  </label>
+<Form on:submit={createSession} fluid>
+  <h3>Create a session</h3>
+  <TextInput name="username" bind:value={username} label="Your name" />
+
   <div class="deck-select">
     <h5>Select a deck</h5>
     <DeckSelector bind:value={deck} />
   </div>
-  <footer>
-    <Button icon="🚀" type="submit" disabled={!username}>Create</Button>
+  <footer class="non-fluid" slot="footer">
+    <Button class="submit-btn" icon="🚀" type="submit" disabled={!username}
+      >Create</Button
+    >
   </footer>
-</form>
+</Form>
 
 <style>
   .deck-select {
     margin-bottom: 1em;
   }
-  footer {
-    display: flex;
-    justify-content: center;
+  footer.non-fluid {
+    width: var(--form-control-width);
   }
 </style>

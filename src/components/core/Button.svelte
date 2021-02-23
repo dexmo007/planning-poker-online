@@ -31,7 +31,7 @@
     background-color: var(--primary-color);
     border: none;
     border-radius: 9px;
-    padding: 10px;
+    padding: 1em 2em;
     outline: none;
     cursor: pointer;
     display: flex;

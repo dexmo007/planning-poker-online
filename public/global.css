@@ -7,6 +7,7 @@
 
   --border-radius: 9px;
   --border-width: 3px;
+  --form-control-width: 270px;
 }
 
 *,
@@ -54,29 +55,15 @@ textarea {
   font-family: inherit;
   font-size: inherit;
   padding: 0.4em;
-  margin: 0 0 0.5em 0;
   box-sizing: border-box;
-  border: 1px solid #ccc;
+  border: 1px solid var(--gray);
   border-radius: 2px;
-}
-
-input {
-  border-width: var(--border-width);
-  border-radius: var(--border-radius);
-  padding: 1em;
-  outline: none;
-  border-color: var(--gray);
-}
-
-input:active,
-input:focus {
-  border-color: var(--primary-color);
-}
-
-input:disabled {
-  color: #ccc;
 }
 
 input[type='range'] {
   height: 0;
+}
+
+.italic {
+  font-style: italic;
 }

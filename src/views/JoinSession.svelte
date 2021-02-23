@@ -2,8 +2,8 @@
   import { getContext } from 'svelte';
   import firebase from 'firebase/app';
   import { navigate } from 'svelte-routing';
-  import Button from '../components/Button.svelte';
   import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
+  import { Button, TextInput, Form } from '../components/core';
 
   export let sessionId;
   let username;
@@ -30,21 +30,12 @@
   }
 </script>
 
-<h3>Join an existing session</h3>
-<form class="join" on:submit|preventDefault={joinSession}>
-  <label>
-    Your name
-    <input bind:value={username} />
-  </label>
-  <footer>
+<Form on:submit={joinSession}>
+  <h3>Join an existing session</h3>
+  <TextInput label="Your name" bind:value={username} />
+
+  <footer slot="footer">
     <Button icon={faSignInAlt} type="submit" disabled={!username}>Join</Button>
     {#if error}{error}{/if}
   </footer>
-</form>
-
-<style>
-  footer {
-    display: flex;
-    justify-content: center;
-  }
-</style>
+</Form>

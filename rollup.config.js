@@ -20,12 +20,14 @@ export default {
   },
   plugins: [
     replace({
+      preventAssignment: true,
+      values: {
       'process.env': JSON.stringify({
         mode: production ? 'production' : 'development',
         ...config({ path: path.resolve(process.cwd(), '.env') }).parsed,
         ...config({ path: path.resolve(process.cwd(), '.env.local') }).parsed,
       }),
-    }),
+    }}),
     svelte({
       compilerOptions: {
               // enable run-time checks when not in production

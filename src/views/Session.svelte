@@ -1,10 +1,8 @@
 <script>
   import firebase from 'firebase/app';
-  import { FirebaseApp, User, Doc, Collection } from 'sveltefire';
-  import Button from '../components/Button.svelte';
+  import { User, Collection } from 'sveltefire';
   import ScrumfaceCard from '../components/ScrumfaceCard.svelte';
-  import CopyToClipboard from '../components/CopyToClipboard.svelte';
-  import Avatar from '../components/Avatar.svelte';
+  import { Button, CopyToClipboard, Avatar } from '../components/core';
   import decks from '../data/decks.js';
   import { collectionStore, docStore } from 'sveltefire';
   import { navigate, Link } from 'svelte-routing';
@@ -85,11 +83,29 @@
 
 <User let:user>
   {#if session}
-    <h3>
-      Welcome in {sessionId}
-      {#if session.owner === user.uid}(Owner){/if}
-    </h3>
-    {#if session.state !== 'STARTED'}
+    <header>
+      <h3>
+        Welcome in {sessionId}
+      </h3>
+      {#if session.owner === user.uid}
+        <span class="italic">&nbsp;(Owner)</span>
+        {#if session.state === 'STARTED'}
+          <div class="end">
+            <Button
+              theme="danger"
+              icon={faPowerOff}
+              on:click={() => terminateSession()}
+            >
+              <div>
+                <span class="text">Terminate session</span>
+              </div>
+            </Button>
+          </div>
+        {/if}
+      {/if}
+    </header>
+
+    {#if session.state === 'CREATED'}
       <div class="invite-container">
         <span>Copy the link to invite others</span>
         <CopyToClipboard
@@ -100,12 +116,10 @@
     {/if}
     {#if session.owner === user.uid}
       <div class="controls">
-        {#if session.state !== 'STARTED'}
+        {#if session.state === 'CREATED'}
           <Button icon={faPlay} on:click={() => setSessionState('STARTED')}
             >Start session</Button
           >
-        {/if}
-        {#if session.state !== 'TERMINATED'}
           <Button
             theme="danger"
             icon={faPowerOff}
@@ -135,6 +149,7 @@
                   />
                   {#if !player.choice}
                     <Button
+                      class="confirm-btn"
                       icon={faCheck}
                       on:click={() => confirmChosenCard(user.uid)}
                     >
@@ -206,6 +221,18 @@
 </User>
 
 <style>
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  header > .end {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
   .board {
     display: flex;
     justify-content: center;
@@ -249,6 +276,9 @@
   }
   .card-choice > :global(:not(:last-child)) {
     margin-bottom: 0.3em;
+  }
+  .card-choice :global(.confirm-btn) {
+    padding: 0.75em;
   }
   .invite-container {
     display: flex;

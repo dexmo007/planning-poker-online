@@ -1,4 +1,8 @@
-<span class="hr">OR</span>
+<script>
+  export let margin = undefined;
+</script>
+
+<span class="hr" style={margin && `margin: ${margin}`}>OR</span>
 
 <style>
   .hr {

@@ -43,11 +43,9 @@
   }
   label.checked {
     border-color: var(--primary-color);
-    /*box-shadow: 0 0 5px var(--primary-color);*/
   }
   input {
     display: none;
-    /* width: 100%; */
   }
   input ~ .check {
     width: 1.3em;

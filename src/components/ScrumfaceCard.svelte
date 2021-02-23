@@ -1,11 +1,28 @@
 <script>
-  import FlippableCard from "./FlippableCard.svelte";
+  import { FlippableCard } from './core';
 
   export let faceUp;
   export let value;
   export let clickable = false;
-  export let width = "180px";
+  export let width = '180px';
 </script>
+
+<FlippableCard flipped={!faceUp} {width} height={`calc(1.66667 * ${width})`}>
+  <div
+    slot="front"
+    class="card front"
+    style={clickable ? 'cursor: pointer' : ''}
+    on:click
+  >
+    <span>{typeof value === 'undefined' ? '' : value}</span>
+  </div>
+  <div
+    slot="back"
+    class="card back"
+    style={clickable ? 'cursor: pointer' : ''}
+    on:click
+  />
+</FlippableCard>
 
 <style>
   .card {
@@ -28,7 +45,7 @@
     position: relative;
   }
   .card.back::before {
-    content: "";
+    content: '';
     position: absolute;
     top: 15px;
     left: 15px;
@@ -38,18 +55,3 @@
     border-radius: 3px;
   }
 </style>
-
-<FlippableCard flipped={!faceUp} {width} height={`calc(1.66667 * ${width})`}>
-  <div
-    slot="front"
-    class="card front"
-    style={clickable ? 'cursor: pointer' : ''}
-    on:click>
-    <span>{typeof value === 'undefined' ? '' : value}</span>
-  </div>
-  <div
-    slot="back"
-    class="card back"
-    style={clickable ? 'cursor: pointer' : ''}
-    on:click />
-</FlippableCard>
