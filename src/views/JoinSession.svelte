@@ -6,14 +6,19 @@
   import { Button, TextInput, Form } from '../components/core';
 
   export let sessionId;
-  let username;
+
   let error;
-  const { user } = getContext('user');
+  const ctx = getContext('user');
+  $: user = ctx.user;
+  let username = ctx.username;
+
   async function joinSession() {
     if (!sessionId || !username) {
       return;
     }
     error = null;
+    localStorage.setItem('username', username);
+    ctx.username = username;
 
     const ref = firebase.firestore().collection('sessions').doc(sessionId);
     const snap = await ref.get();

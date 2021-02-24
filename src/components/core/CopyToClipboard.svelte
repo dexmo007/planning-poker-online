@@ -29,7 +29,7 @@
     bind:this={textarea}
   />
   <span class="action" on:click={onCopyToClipboard}>
-    <Fa icon={faCopy} />
+    <Fa icon={faCopy} class="copy-icon" />
   </span>
 </div>
 
@@ -45,6 +45,7 @@
     resize: none;
     margin-bottom: 0;
     padding: 1em;
+    padding-right: 2em;
   }
   .action {
     position: absolute;
@@ -52,6 +53,10 @@
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
+  }
+  textarea:focus ~ .action :global(.copy-icon),
+  textarea:active ~ .action :global(.copy-icon) {
+    color: var(--primary-color);
   }
   .info {
     position: absolute;

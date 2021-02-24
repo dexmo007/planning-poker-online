@@ -85,7 +85,7 @@
   {#if session}
     <header>
       <h3>
-        Welcome in {sessionId}
+        {session.name || sessionId}
       </h3>
       {#if session.owner === user.uid}
         <span class="italic">&nbsp;(Owner)</span>

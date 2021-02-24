@@ -12,6 +12,7 @@
     "@rollup/plugin-commonjs": "^17.1.0",
     "@rollup/plugin-node-resolve": "^11.2.0",
     "@rollup/plugin-replace": "^2.4.1",
+    "@types/faker": "^5.1.7",
     "dotenv": "^8.2.0",
     "eslint": "^7.20.0",
     "eslint-plugin-svelte3": "^3.1.1",
@@ -27,6 +28,7 @@
   "dependencies": {
     "@fortawesome/free-regular-svg-icons": "^5.15.2",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
+    "faker": "^5.4.0",
     "firebase": "^8.2.9",
     "svelte-fa": "^2.2.0",
     "svelte-routing": "^1.5.0",
