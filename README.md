@@ -1,3 +1,5 @@
+[![CI](https://github.com/dexmo007/planning-poker-online/actions/workflows/main.yml/badge.svg)](https://github.com/dexmo007/planning-poker-online/actions/workflows/main.yml)
+
 # Planning Poker online
 
 Play Planning Poker remotely
