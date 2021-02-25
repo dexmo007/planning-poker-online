@@ -23,7 +23,7 @@
   <span class="info" class:visible={showInfo}>{infoText}</span>
   <textarea
     rows="1"
-    cols={value.length}
+    cols={value.length + 1}
     readonly
     {value}
     bind:this={textarea}
@@ -46,6 +46,7 @@
     margin-bottom: 0;
     padding: 1em;
     padding-right: 2em;
+    overflow: hidden;
   }
   .action {
     position: absolute;
