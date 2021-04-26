@@ -29,7 +29,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.15.2",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
     "faker": "^5.4.0",
-    "firebase": "^8.2.9",
+    "firebase": "^8.4.2",
     "svelte-fa": "^2.2.0",
     "svelte-routing": "^1.5.0",
     "sveltefire": "^0.1.5"
