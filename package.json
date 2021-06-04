@@ -14,7 +14,7 @@
     "@rollup/plugin-replace": "^2.4.1",
     "@types/faker": "^5.1.7",
     "dotenv": "^8.2.0",
-    "eslint": "^7.20.0",
+    "eslint": "^7.28.0",
     "eslint-plugin-svelte3": "^3.1.1",
     "npm-check-updates": "^11.1.9",
     "rollup": "^2.39.1",
